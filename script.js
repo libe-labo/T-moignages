@@ -73,30 +73,52 @@ $(function() {
 
         // Handle Instagram iframes
         if ($this.hasClass('content__item--has-iframe')) {
-            $this.on('DOMNodeInserted.iframeload', function(ev) {
-                if (ev.target.tagName === 'IFRAME') {
-                    var $iframe = $(ev.target);
-                    $iframe.on('load', function() {
-                        $this.off('DOMNodeInserted.iframeload');
-                        $iframe.css('width', 'calc(100% + 16px)');
-                        $iframe.parent().css('height', $this.innerWidth());
-                        callIsotope();
+            var iframeInserted = function($iframe) {
+                $iframe.attr({
+                    width : '',
+                    height : ''
+                });
+                $iframe.on('load', function() {
+                    $this.off('DOMNodeInserted.iframeload');
+                    $iframe.css('width', 'calc(100% + 16px)');
+                    $iframe.parent().css('height', $this.innerWidth());
+                    callIsotope();
+                });
+            };
+
+            var $iframe = $this.find('iframe');
+            if ($iframe.length > 0) {
+                iframeInserted($iframe);
+            } else {
+                if (MutationObserver != null) {
+                    var observer = new MutationObserver(function(mutations) {
+                        _.each(mutations, function(mutation) {
+                            _.each(mutation.addedNodes, function(newNode) {
+                                if (newNode.tagName === 'IFRAME') {
+                                    iframeInserted($(newNode));
+                                    observer.disconnect();
+                                }
+                            });
+                        });
+                    });
+                    observer.observe($this.find('.content__item--has-iframe__wrapper')[0], {
+                        childList : true
+                    });
+                } else {
+                    $this.on('DOMNodeInserted.paulloz', function(ev) {
+                        if (ev.target.tagName === 'IFRAME') {
+                            iframeInserted($(ev.target));
+                            $this.off('DOMNodeInserted.paulloz');
+                        }
                     });
                 }
-            });
+            }
         }
 
         // Resize instagram wrappers on window resize
         $(window).on('resize', _.debounce(function() {
-            $('.content__item--instagram__wrapper, .content__item--vine__wrapper').each(function() {
+            $('.content__item--has-iframe__wrapper').each(function() {
                 $(this).css('height', $(this).parent().innerWidth());
-            });
-
-            $('.content__item--vine__wrapper iframe').each(function() {
-                $(this).attr({
-                    width : $(this).parent().innerWidth(),
-                    height : $(this).parent().innerWidth()
-                });
             });
 
             callIsotope();

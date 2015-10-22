@@ -7,7 +7,7 @@
     }
 
     &__item {
-        .columns(4);
+        .columns(5);
 
         z-index: 50;
 
@@ -140,30 +140,6 @@
             }
         }
 
-        &--instagram {
-            font-size: 1em;
-
-            blockquote > div {
-                display: none;
-            }
-
-            &__wrapper {
-                position: relative;
-
-                .vendor(box-sizing, border-box);
-                overflow: hidden;
-
-                border: @border-width solid @primary-color;
-
-                iframe {
-                    position: absolute;
-
-                    top: -49px;
-                    left: -9px;
-                }
-            }
-        }
-
         &--quote, &--tweet, &--instagram, &--vine {
             &__from {
                 height: 2.2em;
@@ -189,23 +165,6 @@
                     border-top: 25px solid @primary-color;
                     border-right: 25px solid transparent;
                 }
-            }
-        }
-
-        &--vine {
-            font-size: 1em;
-
-            &__wrapper {
-                border: @border-width solid @primary-color;
-
-                width: 100%;
-                overflow: hidden;
-
-                .vendor(box-sizing, border-box);
-            }
-
-            iframe {
-                display: block;
             }
         }
 
@@ -265,6 +224,59 @@
                     display: none;
                 }
             }
+        }
+
+        &--instagram {
+            font-size: 1em;
+
+            blockquote > div {
+                display: none;
+            }
+
+            .content__item--has-iframe__wrapper {
+                border: @border-width solid @primary-color;
+
+                iframe {
+                    top: -49px;
+                    left: -9px;
+                }
+            }
+        }
+
+        &--vine {
+            font-size: 1em;
+
+            .content__item--has-iframe__wrapper {
+                border: @border-width solid @primary-color;
+            }
+
+            iframe {
+            }
+        }
+
+        &--has-iframe {
+            &__wrapper {
+                position: relative;
+
+                height: 0;
+                overflow: hidden;
+
+                .vendor(box-sizing, border-box);
+
+                iframe {
+                    position: absolute;
+
+                    left: -8px;
+                }
+            }
+        }
+    }
+}
+
+@media (max-width: 1280px) {
+    .content {
+        &__item {
+            .columns(4);
         }
     }
 }

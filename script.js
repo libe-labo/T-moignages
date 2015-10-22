@@ -16,6 +16,9 @@ $(function() {
 
         $isotope.imagesLoaded().progress(function() {
             $isotope.isotope('layout');
+        }).then(function() {
+            $isotope.isotope('layout');
+            setTimeout(function() { $isotope.isotope('layout'); }, 500);
         });
 
         $('.content').css('height', $('.content_inner').outerHeight());

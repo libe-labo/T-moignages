@@ -168,6 +168,10 @@
             }
         }
 
+        &--tweet, &--instagram, &--vine, &--dailymotion, &--youtube {
+            display: none;
+        }
+
         &--quote {
             border: @border-width solid #fff;
 
@@ -228,10 +232,6 @@
 
         &--instagram {
             font-size: 1em;
-
-            blockquote > div {
-                display: none;
-            }
 
             .content__item--has-iframe__wrapper {
                 border: @border-width solid @primary-color;

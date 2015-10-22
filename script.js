@@ -74,14 +74,25 @@ $(function() {
         // Handle Instagram iframes
         if ($this.hasClass('content__item--has-iframe')) {
             var iframeInserted = function($iframe) {
-                $iframe.attr({
-                    width : '',
-                    height : ''
-                });
+                $iframe.removeAttr('width');
+                $iframe.removeAttr('height');
                 $iframe.on('load', function() {
-                    $this.off('DOMNodeInserted.iframeload');
-                    $iframe.css('width', 'calc(100% + 16px)');
-                    $iframe.parent().css('height', $this.innerWidth());
+                    $this.css('display', 'block');
+
+                    var width = '100%';
+                    if ($iframe.parents('.content__item--has-iframe__wrapper').length > 0) {
+                        width = 'calc(100% + 16px)';
+                    }
+                    $iframe.css('width', width);
+
+                    var height = $iframe.innerWidth();
+                    if ($iframe.parent().hasClass('s16x9')) {
+                        height = (height / 16) * 9;
+                    }
+                    $iframe.css('min-height', height);
+
+                    $iframe.parents('.content__item--has-iframe__wrapper')
+                        .css('height', $this.innerWidth());
                     callIsotope();
                 });
             };
@@ -118,6 +129,7 @@ $(function() {
         // Resize instagram wrappers on window resize
         $(window).on('resize', _.debounce(function() {
             $('.content__item--has-iframe__wrapper').each(function() {
+                $(this).find('iframe').css('min-height', $(this).parent().innerWidth());
                 $(this).css('height', $(this).parent().innerWidth());
             });
 

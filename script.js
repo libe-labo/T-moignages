@@ -45,6 +45,15 @@ $(function() {
                     $this.removeClass('content__item--folded')
                          .addClass('content__item--unfolded content__item--double');
 
+                    // Close everything else
+                    $('.content__item').each(function() {
+                        if ($(this).index() === $this.index()) { return; }
+                        var fold = $(this).data('fold');
+                        if (fold != null) {
+                            fold();
+                        }
+                    });
+
                     callIsotope();
                 });
             });

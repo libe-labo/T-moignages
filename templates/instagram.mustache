@@ -1,6 +1,8 @@
 <div class="content__item content__item--instagram">
-    <a href="{{url}}" target="_blank"><img src="{{picture}}"></a>
+    <div class="content__item--instagram__wrapper">
+        {{&html}}
+    </div>
     <div class="content__item--instagram__from">
-        <i class="fa fa-instagram"></i>&nbsp;<a href="https://instagram.com/{{fromname}}" target="_blank">{{fromname}}</a>
+        <i class="fa fa-instagram"></i>&nbsp;<a href="{{url}}" target="_blank">{{fromname}}</a>
     </div>
 </div>

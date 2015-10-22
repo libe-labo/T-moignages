@@ -105,6 +105,7 @@ class Sheet():
             return dict(instagram=dict(
                 picture=media['thumbnail_url'],
                 url=url,
+                html=media['html'],
                 fromname=media['author_name']
             ))
         return None

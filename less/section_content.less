@@ -181,13 +181,24 @@
         &--instagram {
             font-size: 1em;
 
-            img {
-                width: 100%;
-                height: auto;
+            blockquote > div {
+                display: none;
+            }
+
+            &__wrapper {
+                position: relative;
+
+                .vendor(box-sizing, border-box);
+                overflow: hidden;
 
                 border: @border-width solid @primary-color;
 
-                .vendor(box-sizing, border-box);
+                iframe {
+                    position: absolute;
+
+                    top: -49px;
+                    left: -9px;
+                }
             }
         }
 

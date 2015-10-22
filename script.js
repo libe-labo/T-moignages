@@ -70,5 +70,26 @@ $(function() {
             $this.data('bind-unfold')();
             $this.find('.when-unfolded .fa-remove').on('click.fold', $this.data('fold'));
         }
+
+        // Handle Instagram iframes
+        if ($this.hasClass('content__item--instagram')) {
+            $this.on('DOMNodeInserted', function(ev) {
+                if (ev.target.tagName === 'IFRAME') {
+                    var $iframe = $(ev.target);
+                    $iframe.on('load', function() {
+                        $iframe.css('width', 'calc(100% + 16px)');
+                        $iframe.parent().css('height', $this.innerWidth());
+                        callIsotope();
+                    });
+                }
+            });
+        }
+
+        // Resize instagram wrappers on window resize
+        $(window).on('resize', _.debounce(function() {
+            $('.content__item--instagram__wrapper').each(function() {
+                $(this).css('height', $(this).parent().innerWidth());
+            });
+        }, 200));
     });
 });

@@ -145,14 +145,17 @@ class Sheet():
         return self.__data
 
 
-def watchFiles():
+def watchFiles(sheet_id):
     wm = pyinotify.WatchManager()
     mask = pyinotify.IN_DELETE | pyinotify.IN_CREATE | pyinotify.IN_MODIFY
 
     class EventHandler(pyinotify.ProcessEvent):
         def __process_change(self, event):
             print("{0} has been modified".format(event.pathname))
-            buildLessFiles()
+            if event.path == 'templates':
+                buildIndex(sheet_id)
+            elif event.path == 'less':
+                buildLessFiles()
 
         def process_IN_DELETE(self, event):
             self.__process_change(event)
@@ -165,6 +168,7 @@ def watchFiles():
 
     notifier = pyinotify.Notifier(wm, EventHandler())
     wm.add_watch('less/', mask, rec=True)
+    wm.add_watch('templates/', mask, rec=True)
 
     notifier.loop()
 
@@ -184,7 +188,7 @@ if __name__ == '__main__':
     if args.action == 'watch':
         buildLessFiles()
         buildIndex(vars(args)['sheet-id'])
-        watchFiles()
+        watchFiles(vars(args)['sheet-id'])
     elif args.action == 'build':
         buildLessFiles()
         buildIndex(vars(args)['sheet-id'])

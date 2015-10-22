@@ -177,7 +177,22 @@
                     text-decoration: none;
                 }
             }
+        }
 
+        &--instagram {
+            font-size: 1em;
+
+            img {
+                width: 100%;
+                height: auto;
+
+                border: @border-width solid @primary-color;
+
+                .vendor(box-sizing, border-box);
+            }
+        }
+
+        &--quote, &--tweet, &--instagram {
             &__from {
                 height: 2.2em;
                 padding: 0 0 0 .5em;
@@ -185,6 +200,7 @@
                 background: #fff;
 
                 color: @primary-color;
+                text-align: left;
 
                 img {
                     height: 100%;

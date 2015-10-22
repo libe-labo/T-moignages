@@ -17,11 +17,6 @@ twitter_api = None
 
 def getTweet(url):
     global twitter_api
-    if twitter_api is None:
-        with open('.twitter.json', 'r') as f:
-            twitter_api = json.loads(f.read())
-    api = tweepy.API(tweepy.AppAuthHandler(twitter_api['api_key'], twitter_api['api_secret']))
-    return api.get_status(url.split('/')[-1])
 
 
 def canBuildLess(f):
@@ -51,6 +46,9 @@ class Sheet():
     def __init__(self, key):
         self.__endpoint = 'https://spreadsheets.google.com'
         self.__key = key
+
+        self.__twitter_api = None
+        self.__instagram_api = dict(endpoint='https://api.instagram.com/publicapi/oembed/?url=')
 
         self.__data = list()
 
@@ -83,6 +81,34 @@ class Sheet():
     def __setData(self, data):
         self.__data = data
 
+    def __formatTweet(self, url):
+        if self.__twitter_api is None:
+            with open('.twitter.json', 'r') as f:
+                self.__twitter_api = json.loads(f.read())
+        api = tweepy.API(
+            tweepy.AppAuthHandler(self.__twitter_api['api_key'], self.__twitter_api['api_secret'])
+        )
+        tweet = api.get_status(url.split('/')[-1])
+        return dict(tweet=dict(
+            id=tweet.id,
+            fromname=tweet.author.name,
+            fromscreenname=tweet.author.screen_name,
+            text=tweet.text,
+            date=tweet.created_at.strftime('%d/%m/%Y, %H:%M'),
+            picture=tweet.author.profile_image_url
+        ))
+
+    def __formatInstagram(self, url):
+        media = requests.get('{0}{1}'.format(self.__instagram_api['endpoint'], url))
+        if media.status_code == 200:
+            media = media.json()
+            return dict(instagram=dict(
+                picture=media['thumbnail_url'],
+                url=url,
+                fromname=media['author_name']
+            ))
+        return None
+
     def __formatData(self, data):
         def getOrFalse(d, k):
             return len(d[k]) > 0 and dict(value=d[k].encode('utf-8')) or False
@@ -102,23 +128,15 @@ class Sheet():
                     textint=addNBSPs(d['texteint.']).encode('utf-8')
                 )
             elif d['type'] in ['tweet']:
-                tweet = getTweet(d['texteext.'])
-                _d = dict()
-                _d[d['type']] = dict(
-                    id=tweet.id,
-                    fromname=tweet.author.name,
-                    fromscreenname=tweet.author.screen_name,
-                    text=tweet.text,
-                    date=tweet.created_at.strftime('%d/%m/%Y, %H:%M'),
-                    picture=tweet.author.profile_image_url
-                )
-                _data['items'].append(_d)
+                _data['items'].append(self.__formatTweet(d['texteext.']))
+            elif d['type'] in ['instagram']:
+                _data['items'].append(self.__formatInstagram(d['texteext.']))
             else:
                 _d = dict()
                 _d[d['type']] = dict(
                     textext=addNBSPs(d['texteext.']).encode('utf-8'),
                     textint=addNBSPs(d['texteint.']).encode('utf-8'),
-                    image=addNBSPs(d['image']).encode('utf-8')
+                    image=d['image'].encode('utf-8')
                 )
                 _data['items'].append(_d)
         return _data

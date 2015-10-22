@@ -17,8 +17,11 @@ html, body {
             padding-top: 100px;
         }
     }
-}
 
+    a {
+        color: @primary-color;
+    }
+}
 
 // Header
 @import 'header.less';
@@ -31,3 +34,15 @@ html, body {
 
 // Utils
 @import 'utils.less';
+
+@media (max-width: 769px) {
+    html, body {
+        section {
+            padding: 1em;
+
+            &:first-of-type {
+                padding-top: calc(~"1em + 50px");
+            }
+        }
+    }
+}

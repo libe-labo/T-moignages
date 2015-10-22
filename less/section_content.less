@@ -10,6 +10,8 @@
         @width: 32%;
         @gutter-width: ((100 - (3 * @width)) / 2);
 
+        z-index: 50;
+
         width: @width;
         margin-bottom: 1em;
 
@@ -30,6 +32,10 @@
 
         &--double {
             width: ((@width * 2) + @gutter-width);
+        }
+
+        &--triple {
+            width: 100%;
         }
 
         &--folded {
@@ -102,7 +108,11 @@
 
             img {
                 max-width: 100%;
-                margin: 0 auto .2em auto;
+                margin: 0 auto .2em 0;
+            }
+
+            .when-folded--no-image {
+                padding-top: .5em;
             }
 
             &.content__item--folded:hover {
@@ -142,6 +152,71 @@
                     color: #000;
                     cursor: pointer;
                 }
+            }
+        }
+
+        &--tweet {
+            text-align: left;
+            font-size: 1em;
+
+            &__tweet, &__metadata {
+                padding: 1em;
+
+                background-color: @primary-color;
+
+                color: #fff;
+            }
+
+            &__metadata {
+                padding: .9em;
+
+                border-top: @border-width / 2 dashed #fff;
+
+                a {
+                    color: inherit;
+                    text-decoration: none;
+                }
+            }
+
+            &__from {
+                height: 2.2em;
+                padding: 0 0 0 .5em;
+
+                background: #fff;
+
+                color: @primary-color;
+
+                img {
+                    height: 100%;
+                    float: right;
+                }
+
+                &::after {
+                    content: '';
+
+                    display: inline-block;
+
+                    width: 0;
+                    height: 0;
+                    border-top: 25px solid @primary-color;
+                    border-right: 25px solid transparent;
+                }
+            }
+        }
+    }
+}
+
+@media (max-width: 769px) {
+    .content {
+        &__item {
+            width: 100%;
+
+            &--sizer {
+                width: 100%;
+            }
+
+            &--gutter-sizer {
+                width: 0;
             }
         }
     }

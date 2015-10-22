@@ -5,3 +5,22 @@
          -o-@{property}: @value;
             @{property}: @value;
 }
+
+.columns(@howmany) {
+    @gutter-width: 2%;
+    @width: (100 - ((@howmany - 1) * @gutter-width)) / @howmany;
+
+    width: @width;
+
+    &--sizer {
+        width: @width;
+    }
+
+    &--gutter-sizer {
+        width: @gutter-width;
+    }
+
+    &--double {
+        width: ((@width * 2) + @gutter-width);
+    }
+}

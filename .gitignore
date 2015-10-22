@@ -1,2 +1,9 @@
+# Pip modules
 .pip
+
+# Generated files
 style.css
+index.html
+
+# Configuration files
+.twitter.json

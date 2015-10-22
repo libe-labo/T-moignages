@@ -128,9 +128,14 @@ $(function() {
 
         // Resize instagram wrappers on window resize
         $(window).on('resize', _.debounce(function() {
-            $('.content__item--has-iframe__wrapper').each(function() {
-                $(this).find('iframe').css('min-height', $(this).parent().innerWidth());
-                $(this).css('height', $(this).parent().innerWidth());
+            $('.content__item--has-iframe').each(function() {
+                var $this = $(this),
+                    height = $(this).innerWidth();
+                if ($this.hasClass('s16x9')) {
+                    height = (height / 16) * 9;
+                }
+                $this.find('iframe').css('min-height', height);
+                $this.find('.content__item--has-iframe__wrapper').css('height', $this.innerWidth());
             });
 
             callIsotope();

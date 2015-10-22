@@ -72,11 +72,12 @@ $(function() {
         }
 
         // Handle Instagram iframes
-        if ($this.hasClass('content__item--instagram')) {
-            $this.on('DOMNodeInserted', function(ev) {
+        if ($this.hasClass('content__item--has-iframe')) {
+            $this.on('DOMNodeInserted.iframeload', function(ev) {
                 if (ev.target.tagName === 'IFRAME') {
                     var $iframe = $(ev.target);
                     $iframe.on('load', function() {
+                        $this.off('DOMNodeInserted.iframeload');
                         $iframe.css('width', 'calc(100% + 16px)');
                         $iframe.parent().css('height', $this.innerWidth());
                         callIsotope();
@@ -87,9 +88,18 @@ $(function() {
 
         // Resize instagram wrappers on window resize
         $(window).on('resize', _.debounce(function() {
-            $('.content__item--instagram__wrapper').each(function() {
+            $('.content__item--instagram__wrapper, .content__item--vine__wrapper').each(function() {
                 $(this).css('height', $(this).parent().innerWidth());
             });
+
+            $('.content__item--vine__wrapper iframe').each(function() {
+                $(this).attr({
+                    width : $(this).parent().innerWidth(),
+                    height : $(this).parent().innerWidth()
+                });
+            });
+
+            callIsotope();
         }, 200));
     });
 });

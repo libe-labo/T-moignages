@@ -164,7 +164,7 @@
             }
         }
 
-        &--quote, &--tweet, &--instagram {
+        &--quote, &--tweet, &--instagram, &--vine {
             &__from {
                 height: 2.2em;
                 padding: 0 0 0 .5em;
@@ -189,6 +189,23 @@
                     border-top: 25px solid @primary-color;
                     border-right: 25px solid transparent;
                 }
+            }
+        }
+
+        &--vine {
+            font-size: 1em;
+
+            &__wrapper {
+                border: @border-width solid @primary-color;
+
+                width: 100%;
+                overflow: hidden;
+
+                .vendor(box-sizing, border-box);
+            }
+
+            iframe {
+                display: block;
             }
         }
 

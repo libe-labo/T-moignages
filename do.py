@@ -49,6 +49,7 @@ class Sheet():
 
         self.__twitter_api = None
         self.__instagram_api = dict(endpoint='https://api.instagram.com/publicapi/oembed/?url=')
+        self.__vine_api = dict(endpoint='https://vine.co/oembed.json?url=')
 
         self.__data = list()
 
@@ -103,10 +104,20 @@ class Sheet():
         if media.status_code == 200:
             media = media.json()
             return dict(instagram=dict(
-                picture=media['thumbnail_url'],
                 url=url,
                 html=media['html'],
                 fromname=media['author_name']
+            ))
+        return None
+
+    def __formatVine(self, url):
+        vine = requests.get('{0}{1}'.format(self.__vine_api['endpoint'], url))
+        if vine.status_code == 200:
+            vine = vine.json()
+            return dict(vine=dict(
+                url=url,
+                html=vine['html'],
+                fromname=vine['author_name']
             ))
         return None
 
@@ -132,6 +143,8 @@ class Sheet():
                 _data['items'].append(self.__formatTweet(d['texteext.']))
             elif d['type'] in ['instagram']:
                 _data['items'].append(self.__formatInstagram(d['texteext.']))
+            elif d['type'] in ['vine']:
+                _data['items'].append(self.__formatVine(d['texteext.']))
             else:
                 _d = dict()
                 _d[d['type']] = dict(

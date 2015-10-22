@@ -1,0 +1,4 @@
+pyinotify==0.9.6
+pystache==0.5.4
+requests==2.8.1
+tweepy==3.4.0

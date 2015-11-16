@@ -2,16 +2,16 @@
     {{#image}}
         <img src="{{image}}">
         <div class="when-folded">
-            {{textext}}
+            {{& textext}}
         </div>
     {{/image}}
     {{^image}}
         <div class="when-folded when-folded--no-image">
-            {{textext}}
+            {{& textext}}
         </div>
     {{/image}}
     <div class="when-unfolded">
-        {{textext}}
+        {{& textext}}
         <p>
             {{& textint}}
         </p>

@@ -4,29 +4,33 @@ $(function() {
     $('.content__inner').prepend($('<div>', { class : 'content__item--sizer' }));
     $('.content__inner').prepend($('<div>', { class : 'content__item--gutter-sizer' }));
 
-    var callIsotope = function() {
-        var $isotope = $('.content__inner').isotope({
-            itemSelector: '.content__item',
-            percentPosition: true,
-            masonry: {
-                columnWidth: '.content__item--sizer',
-                gutter: '.content__item--gutter-sizer'
-            }
-        });
+    var $isotope;
 
-        $isotope.imagesLoaded().progress(function() {
+    var callIsotope = function() {
+        if ($isotope == null) {
+            $isotope = $('.content__inner').isotope({
+                itemSelector: '.content__item',
+                percentPosition: true,
+                masonry: {
+                    columnWidth: '.content__item--sizer',
+                    gutter: '.content__item--gutter-sizer'
+                }
+            });
+
+            $isotope.imagesLoaded().progress(function() {
+                $isotope.isotope('layout');
+            }).then(function() {
+                $isotope.isotope('layout');
+                setTimeout(function() { $isotope.isotope('layout'); }, 500);
+            });
+        } else {
             $isotope.isotope('layout');
-        }).then(function() {
-            $isotope.isotope('layout');
-            setTimeout(function() { $isotope.isotope('layout'); }, 500);
-        });
+        }
 
         $('.content').css('height', $('.content_inner').outerHeight());
     };
 
-    $('.content__item')
-        .removeClass('content__item--unfolded')
-        .addClass('content__item--folded');
+    $('.content__item').removeClass('content__item--unfolded').addClass('content__item--folded');
 
     callIsotope();
 
@@ -34,7 +38,26 @@ $(function() {
         var $this = $(this);
 
         if ($this.find('.when-unfolded').length > 0) {
-            $this.data('bind-unfold', function() {
+            var fold, bindUnfold;
+
+            fold = function($this) {
+                return function(e) {
+                    if ($this.hasClass('content__item--unfolded')) {
+                        $this.removeClass('content__item--unfolded content__item--double')
+                             .addClass('content__item--folded');
+
+                        setTimeout(function() {
+                            bindUnfold($this);
+                        }, 100);
+
+                        if (e != null) {
+                            callIsotope();
+                        }
+                    }
+                };
+            };
+
+            bindUnfold = function($this) {
                 $this.css('cursor', 'pointer');
 
                 $this.on('click.unfold', function() {
@@ -42,36 +65,24 @@ $(function() {
 
                     $this.off('click.unfold');
 
+                    // Close everything else
+                    $('.content__item').each(function() {
+                        fold($(this))();
+                    });
+
                     $this.removeClass('content__item--folded')
                          .addClass('content__item--unfolded content__item--double');
 
-                    // Close everything else
-                    $('.content__item').each(function() {
-                        if ($(this).index() === $this.index()) { return; }
-                        var fold = $(this).data('fold');
-                        if (fold != null) {
-                            fold();
-                        }
-                    });
 
                     callIsotope();
                 });
-            });
+            };
 
-            $this.data('fold', function() {
-                $this.removeClass('content__item--unfolded content__item--double')
-                     .addClass('content__item--folded');
-
-                callIsotope();
-
-                setTimeout($this.data('bind-unfold'), 100);
-            });
-
-            $this.data('bind-unfold')();
-            $this.find('.when-unfolded .fa-remove').on('click.fold', $this.data('fold'));
+            bindUnfold($this);
+            $this.find('.when-unfolded .fa-remove').on('click.fold', fold($this));
         }
 
-        // Handle Instagram iframes
+        // Handle iframes
         if ($this.hasClass('content__item--has-iframe')) {
             var iframeInserted = function($iframe) {
                 $iframe.removeAttr('width');
@@ -125,20 +136,20 @@ $(function() {
                 }
             }
         }
-
-        // Resize instagram wrappers on window resize
-        $(window).on('resize', _.debounce(function() {
-            $('.content__item--has-iframe').each(function() {
-                var $this = $(this),
-                    height = $(this).innerWidth();
-                if ($this.hasClass('s16x9')) {
-                    height = (height / 16) * 9;
-                }
-                $this.find('iframe').css('min-height', height);
-                $this.find('.content__item--has-iframe__wrapper').css('height', $this.innerWidth());
-            });
-
-            callIsotope();
-        }, 200));
     });
+
+    // Resize iframe wrappers on window resize
+    $(window).on('resize', _.debounce(function() {
+        $('.content__item--has-iframe').each(function() {
+            var $this = $(this),
+                height = $(this).innerWidth();
+            if ($this.hasClass('s16x9')) {
+                height = (height / 16) * 9;
+            }
+            $this.find('iframe').css('min-height', height);
+            $this.find('.content__item--has-iframe__wrapper').css('height', $this.innerWidth());
+        });
+
+        callIsotope(true);
+    }, 200));
 });

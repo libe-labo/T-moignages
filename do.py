@@ -4,14 +4,16 @@
 from __future__ import print_function  # In case we're running with python2
 
 import sys
+import os
+import time
 import json
 import argparse
 import subprocess
-import pyinotify
 import requests
 import pystache
 import tweepy
-
+from watchdog.observers import Observer
+from watchdog.events import FileSystemEventHandler
 
 twitter_api = None
 
@@ -161,32 +163,27 @@ class Sheet():
 
 
 def watchFiles(sheet_id):
-    wm = pyinotify.WatchManager()
-    mask = pyinotify.IN_DELETE | pyinotify.IN_CREATE | pyinotify.IN_MODIFY
-
-    class EventHandler(pyinotify.ProcessEvent):
-        def __process_change(self, event):
-            print("{0} has been modified".format(event.pathname))
-            if event.path == 'templates':
+    class EventHandler(FileSystemEventHandler):
+        def on_any_event(self, event):
+            print("{0} has been modified".format(event.src_path))
+            directory = os.path.split(os.path.split(event.src_path)[0])[1]
+            if directory == 'templates':
                 buildIndex(sheet_id)
-            elif event.path == 'less':
+            elif directory == 'less':
                 buildLessFiles()
 
-        def process_IN_DELETE(self, event):
-            self.__process_change(event)
+    handler = EventHandler()
 
-        def process_IN_CREATE(self, event):
-            self.__process_change(event)
-
-        def process_IN_MODIFY(self, event):
-            self.__process_change(event)
-
-    notifier = pyinotify.Notifier(wm, EventHandler())
-    wm.add_watch('less/', mask, rec=True)
-    wm.add_watch('templates/', mask, rec=True)
-
-    notifier.loop()
-
+    observer = Observer()
+    observer.schedule(handler, 'less/', recursive=True)
+    observer.schedule(handler, 'templates/', recursive=True)
+    observer.start()
+    try:
+        while True:
+            time.sleep(1)
+    except KeyboardInterrupt:
+        observer.stop()
+    observer.join()
 
 def buildIndex(sheet_id):
     with open('index.html', 'w') as index:

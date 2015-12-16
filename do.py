@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
 
 from __future__ import print_function  # In case we're running with python2
 
@@ -39,7 +40,7 @@ def buildLessFiles():
     else:
         print("Built style.css")
         with open('style.css', mode='w') as f:
-            f.write(stdout.decode('utf-8'))
+            f.write(stdout)
 
 
 class Sheet():

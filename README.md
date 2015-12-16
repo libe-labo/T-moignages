@@ -9,7 +9,12 @@ $> pip install -r requirements.txt
 
 And run:
 ```bash
-$> ./do.py [build|watch] <sheet-id>
+$> python3 do.py [build|watch] <sheet-id>
+```
+
+Pour compiler les feuilles de style, il faut installer `less`
+```bash
+$> npm install -g less
 ```
 
 Pour importer des tweets, il faut un fichier de configuration `.twitter.json` :

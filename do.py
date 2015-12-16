@@ -188,6 +188,7 @@ def watchFiles(sheet_id):
         observer.stop()
     observer.join()
 
+
 def buildIndex(sheet_id):
     with open('index.html', 'w') as index:
         with open('templates/base.mustache', 'r') as template:

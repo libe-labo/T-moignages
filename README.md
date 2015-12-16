@@ -12,6 +12,14 @@ And run:
 $> ./do.py [build|watch] <sheet-id>
 ```
 
+Pour importer des tweets, il faut un fichier de configuration `.twitter.json` :
+```json
+{
+	"api_key": "<api-key>",
+	"api_secret": "<api-secret>"
+}
+```
+
 ## License
 
 > The MIT License (MIT)

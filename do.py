@@ -42,7 +42,10 @@ def buildLessFiles():
     else:
         print("Built style.css")
         with open('style.css', mode='w') as f:
-            f.write(stdout)
+            if isinstance(stdout, str):
+                f.write(stdout)
+            else:
+                f.write(stdout.decode('utf-8'))
 
 
 class Sheet():

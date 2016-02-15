@@ -7,3 +7,7 @@ index.html
 
 # Configuration files
 .twitter.json
+
+# Photos
+photos/*
+social.jpg

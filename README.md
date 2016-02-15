@@ -9,7 +9,7 @@ $> pip install -r requirements.txt
 
 And run:
 ```bash
-$> python3 do.py [build|watch] <sheet-id>
+$> python3 do.py [build|watch] (<sheet-id>|<file.json>)
 ```
 
 Pour compiler les feuilles de style, il faut installer `less`

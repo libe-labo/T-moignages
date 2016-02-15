@@ -1,4 +1,9 @@
 #!/usr/bin/env python
+# @Author: Paul Joannon <paulloz>
+# @Date:   2016-02-15T11:51:42+01:00
+# @Email:  hello@pauljoannon.com
+# @Last modified by:   paulloz
+# @Last modified time: 2016-02-15T12:15:05+01:00
 # -*- coding: utf-8 -*-
 
 from __future__ import print_function  # In case we're running with python2
@@ -59,34 +64,38 @@ class Sheet():
 
         self.__data = list()
 
-        try:
-            path = '/feeds/worksheets/{key}/public/basic?alt=json'.format(
-                key=key)
-            for entry in self.__requestData(path)['feed']['entry']:
-                path = '/feeds/list/{key}/{sheetId}/public/values?alt=json'\
-                    .format(key=key,
-                            sheetId=entry['link'][len(entry['link']) - 1]
-                                         ['href'].split('/').pop())
+        self._initData(key)
 
-                self.__setData(self.__formatData([
+    def _initData(self, key):
+        try:
+            path = '/feeds/worksheets/{key}/public/basic?alt=json'.format(key=key)
+            for entry in self._requestData(path)['feed']['entry']:
+                path = '/feeds/list/{key}/{sheetId}/public/values?alt=json'.format(
+                    key=key,
+                    sheetId=entry['link'][len(entry['link']) - 1]['href'].split('/').pop()
+                )
+
+                self._setData([
                     {key[4:]: value['$t']
                         for key, value in entry.items()
                         if key[:4] == 'gsx$'}
-                    for entry in self.__requestData(path)['feed']['entry']]))
+                    for entry in self._requestData(path)['feed']['entry']])
 
         except requests.exceptions.RequestException as e:
             print(e, file=sys.stderr)
             sys.exit(1)
 
-    def __requestData(self, path):
+    def _requestData(self, path):
         r = requests.get(self.__endpoint + path)
         if r.status_code == 200:
             return r.json()
-        raise requests.exceptions.RequestException(
-            "Seems we can't find {0}".format(self.__key))
+        raise requests.exceptions.RequestException("Seems we can't find {0}".format(self.__key))
 
-    def __setData(self, data):
-        self.__data = data
+    def _setData(self, data, formated=False):
+        if formated:
+            self.__data = data
+        else:
+            self.__data = self.__formatData(data)
 
     def __formatTweet(self, url):
         if self.__twitter_api is None:
@@ -165,6 +174,19 @@ class Sheet():
         return self.__data
 
 
+class LocalSheet(Sheet):
+    def _initData(self, key):
+        try:
+            self._setData(self._requestData(key))
+        except FileNotFoundError as e:
+            print(e, file=sys.stderr)
+            sys.exit(1)
+
+    def _requestData(self, path):
+        with open(path, 'r') as file:
+            return json.loads(file.read())
+
+
 def watchFiles(sheet_id):
     class EventHandler(FileSystemEventHandler):
         def on_any_event(self, event):
@@ -192,7 +214,8 @@ def watchFiles(sheet_id):
 def buildIndex(sheet_id):
     with open('index.html', 'w') as index:
         with open('templates/base.mustache', 'r') as template:
-            index.write(pystache.render(template.read(), Sheet(sheet_id).getData()))
+            sheet = LocalSheet(sheet_id) if os.path.isfile(sheet_id) else Sheet(sheet_id)
+            index.write(pystache.render(template.read(), sheet.getData()))
     print("Built index.html")
 
 if __name__ == '__main__':

@@ -3,7 +3,7 @@
 # @Date:   2016-02-15T11:51:42+01:00
 # @Email:  hello@pauljoannon.com
 # @Last modified by:   paulloz
-# @Last modified time: 2016-02-15T12:15:05+01:00
+# @Last modified time: 2016-03-17T10:52:05+01:00
 # -*- coding: utf-8 -*-
 
 from __future__ import print_function  # In case we're running with python2
@@ -146,7 +146,7 @@ class Sheet():
             return s
 
         _data = dict(items=[])
-        for d in data:
+        for i, d in enumerate(data):
             if d['type'] in ['titre', 'sous-titre', 'chapo']:
                 _data[d['type']] = addNBSPs(d['texteext.']).encode('utf-8')
             elif d['type'] in ['lire-aussi']:
@@ -165,7 +165,8 @@ class Sheet():
                 _d[d['type']] = dict(
                     textext=addNBSPs(d['texteext.']).encode('utf-8'),
                     textint=addNBSPs(d['texteint.']).encode('utf-8'),
-                    image=d['image'].encode('utf-8')
+                    image=d['image'].encode('utf-8'),
+                    id=str(i)
                 )
                 _data['items'].append(_d)
         return _data

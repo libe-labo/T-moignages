@@ -43,6 +43,7 @@ $(function() {
             fold = function($this) {
                 return function(e) {
                     if ($this.hasClass('content__item--unfolded')) {
+                        history.pushState(null, null, '');
                         $this.removeClass('content__item--unfolded content__item--double')
                              .addClass('content__item--folded');
 
@@ -61,6 +62,8 @@ $(function() {
                 $this.css('cursor', 'pointer');
 
                 $this.on('click.unfold', function() {
+                    history.pushState(null, null, '#' + $this.attr('id') + 'o');
+
                     $this.css('cursor', '');
 
                     $this.off('click.unfold');
@@ -137,6 +140,13 @@ $(function() {
             }
         }
     });
+
+    if (document.location.hash.length > 1) {
+        var toUnfold = $(document.location.hash.replace(/o$/, ''));
+        if (toUnfold.find('.when-unfolded').length > 0) {
+            toUnfold.trigger('click.unfold');
+        }
+    }
 
     // Resize iframe wrappers on window resize
     $(window).on('resize', _.debounce(function() {

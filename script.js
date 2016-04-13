@@ -1,6 +1,39 @@
 'use strict';
 
 $(function() {
+    $.mobile.autoInitializePage = false;
+    $('.ui-loader').remove();
+    if ($(window).width() < 768) {
+        $( document ).on('mobileinit', function() {
+            $.mobile.loader.prototype.options.textVisible = false;
+        });
+
+        var swipe = function(dir) {
+            var card = $('.content__item').first();
+            card.animate({
+                left: String(200 * dir) + 'px',
+                rotateZ: 3 * dir
+            }, {
+                duration: 200,
+                step: function(now, fx) {
+                    if (fx.prop === 'rotateZ') {
+                        $(this).css('transform', 'rotateZ(' + String(now) + 'deg)');
+                    }
+                },
+                complete: function() {
+                    card.appendTo($('.content__inner'));
+                    card.css({ left: '', transform: '' });
+                    card.prop('rotateZ', 0);
+                }
+            });
+        };
+
+        $('.content__inner')
+            .swipeleft(function() { swipe(-1); })
+            .swiperight(function() { swipe(1);  });
+        return;
+    }
+
     $('.content__inner').prepend($('<div>', { class : 'content__item--sizer' }));
     $('.content__inner').prepend($('<div>', { class : 'content__item--gutter-sizer' }));
 

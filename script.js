@@ -8,29 +8,37 @@ $(function() {
             $.mobile.loader.prototype.options.textVisible = false;
         });
 
-        var swipe = function(dir) {
-            var card = $('.content__item').first();
-            card.animate({
-                left: String(200 * dir) + 'px',
-                rotateZ: 3 * dir
-            }, {
-                duration: 200,
-                step: function(now, fx) {
-                    if (fx.prop === 'rotateZ') {
-                        $(this).css('transform', 'rotateZ(' + String(now) + 'deg)');
-                    }
-                },
-                complete: function() {
-                    card.appendTo($('.content__inner'));
-                    card.css({ left: '', transform: '' });
-                    card.prop('rotateZ', 0);
+        var fCard, pos, baseOffset, lastOffset, minOffset;
+        $('.content__inner')
+            .on('touchstart', function(ev) {
+                var touch = ev.originalEvent.touches ? ev.originalEvent.touches[0] : ev;
+                fCard = $('.content__item').first();
+                baseOffset = touch.pageX;
+                lastOffset = 0;
+                minOffset = $(window).width() / 16;
+            })
+            .on('touchmove', function(ev) {
+                var touch = ev.originalEvent.touches ? ev.originalEvent.touches[0] : ev,
+                    offset = (touch.pageX - baseOffset) / 2,
+                    angle = Math.max(Math.abs(offset) - minOffset, 0) * 0.2;
+
+                fCard.css({
+                    left: String(offset) + 'px',
+                    transform: 'rotateZ(' + String(angle * (offset / Math.abs(offset))) + 'deg)'
+                });
+
+                lastOffset = offset;
+            })
+            .on('touchend', function(ev) {
+                fCard.css({
+                    left: 0,
+                    transform: ''
+                });
+
+                if (Math.abs(lastOffset) >= minOffset) {
+                    fCard.appendTo($('.content__inner'));
                 }
             });
-        };
-
-        $('.content__inner')
-            .swipeleft(function() { swipe(-1); })
-            .swiperight(function() { swipe(1);  });
         return;
     }
 

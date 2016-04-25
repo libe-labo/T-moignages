@@ -309,11 +309,11 @@ body {
 
         &__inner {
             position: relative;
+
+            overflow: hidden;
         }
 
         &__item {
-            display: none;
-
             position: absolute;
             top: 0;
             left: 0;
@@ -324,6 +324,15 @@ body {
 
             &:first-of-type {
                 display: block;
+
+                position: relative;
+                z-index: 30;
+
+                margin-bottom: 0;
+            }
+
+            &:nth-of-type(2) {
+                z-index: 25;
             }
 
             &--photo.content__item--unfolded .when-unfolded {

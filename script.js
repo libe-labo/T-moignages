@@ -8,12 +8,12 @@ $(function() {
             $.mobile.loader.prototype.options.textVisible = false;
         });
 
-        var fCard, pos, baseOffset, lastOffset, minOffset;
+        var firstCard, pos, baseOffset, lastOffset, minOffset;
         $('.content__inner')
             .on('touchstart', function(ev) {
-                var touch = ev.originalEvent.touches ? ev.originalEvent.touches[0] : ev;
-                fCard = $('.content__item').first();
-                baseOffset = touch.pageX;
+                firstCard = $('.content__item').first();
+
+                baseOffset = (ev.originalEvent.touches ? ev.originalEvent.touches[0] : ev).pageX;
                 lastOffset = 0;
                 minOffset = $(window).width() / 16;
             })
@@ -22,23 +22,26 @@ $(function() {
                     offset = (touch.pageX - baseOffset) / 2,
                     angle = Math.max(Math.abs(offset) - minOffset, 0) * 0.2;
 
-                fCard.css({
+                firstCard.css({
                     left: String(offset) + 'px',
-                    transform: 'rotateZ(' + String(angle * (offset / Math.abs(offset))) + 'deg)'
+                    transform: 'rotateZ(' + String(angle * (offset / Math.abs(offset))) + 'deg)',
+                    opacity: Math.abs(offset) > minOffset ? 0.8 : 1
                 });
 
                 lastOffset = offset;
             })
             .on('touchend', function(ev) {
-                fCard.css({
+                firstCard.css({
                     left: 0,
-                    transform: ''
+                    transform: '',
+                    opacity: 1
                 });
 
-                if (Math.abs(lastOffset) >= minOffset) {
-                    fCard.appendTo($('.content__inner'));
+                if (Math.abs(lastOffset) > minOffset) {
+                    firstCard.appendTo($('.content__inner'));
                 }
             });
+
         return;
     }
 
@@ -116,7 +119,6 @@ $(function() {
 
                     $this.removeClass('content__item--folded')
                          .addClass('content__item--unfolded content__item--double');
-
 
                     callIsotope();
                 });

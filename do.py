@@ -46,7 +46,7 @@ def buildLessFiles():
         print(stderr.decode('utf-8'), file=sys.stderr)
     else:
         print("Built style.css")
-        with open('style.css', mode='w') as f:
+        with open('dist/style.css', mode='w') as f:
             if isinstance(stdout, str):
                 f.write(stdout)
             else:
@@ -213,7 +213,7 @@ def watchFiles(sheet_id):
 
 
 def buildIndex(sheet_id):
-    with open('index.html', 'w') as index:
+    with open('dist/index.html', 'w') as index:
         with open('templates/base.mustache', 'r') as template:
             sheet = LocalSheet(sheet_id) if os.path.isfile(sheet_id) else Sheet(sheet_id)
             index.write(pystache.render(template.read(), sheet.getData()))

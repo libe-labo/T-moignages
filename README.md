@@ -2,28 +2,39 @@
 
 Parce qu'on :heart: générer des trucs depuis de spreadsheets.
 
-Install:
+## Installation / Utilisation
+
+- Install :
+
 ```bash
-$> pip install -r requirements.txt
+$ pip install -r requirements.txt
+```
+```bash
+$ npm install -g less
 ```
 
-And run:
+- Run, publier le sheet sur le web puis :
+
 ```bash
-$> python3 do.py [build|watch] (<sheet-id>|<file.json>)
+$ python3 do.py [build|watch] (<sheet-id>|<file.json>)
 ```
 
-Pour compiler les feuilles de style, il faut installer `less`
-```bash
-$> npm install -g less
-```
+- Pour importer des tweets, il faut un fichier de configuration `twitter.json` :
 
-Pour importer des tweets, il faut un fichier de configuration `.twitter.json` :
 ```json
 {
-	"api_key": "<api-key>",
-	"api_secret": "<api-secret>"
+  "api_key": "<api-key>",
+  "api_secret": "<api-secret>"
 }
 ```
+
+## Mise en ligne
+1. Compléter les meta-tags en remplaçant l'url dans `./dist/index.html`
+2. Décommenter et compléter les tracking-tags dans `./dist/index.html`
+3. Ajouter une image d'appel dans `./dist/social.jpg`
+4. Eventuelement ajuster les styles dans `./dist/style.css`
+5. Uploader sur le ftp le contenu du dossier `./dist/`
+
 
 ## License
 

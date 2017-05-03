@@ -2,6 +2,8 @@
 
 Parce qu'on :heart: générer des trucs depuis de spreadsheets.
 
+[Spreadsheets Sample](https://docs.google.com/spreadsheets/d/1piiY7GduSTwi7qt70wgVQc7KS3d5vfxUNYPkU97f8Zc/edit?usp=sharing)
+
 ## Installation / Utilisation
 
 - Install :
@@ -13,7 +15,7 @@ $ pip install -r requirements.txt
 $ npm install -g less
 ```
 
-- Run, publier le sheet sur le web puis :
+- Run, publier le spreadsheets sur le web puis :
 
 ```bash
 $ python3 do.py [build|watch] (<sheet-id>|<file.json>)
